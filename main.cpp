@@ -3,9 +3,11 @@
 #include <windows.h>
 #include <string>
 #include <chrono>
+#include <cstdlib>
 
 using namespace std;
 
+// to move the console position!!
 void moveToPosition(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos;
@@ -14,48 +16,44 @@ void moveToPosition(int x, int y) {
     SetConsoleCursorPosition(hConsole, pos);
 }
 
+
 void animalRunning(string track, string animal, int line) {
     int steps = 0;
-    string trackOn = track;
+    srand(static_cast<unsigned int>(time(0)) + line);  // Different random seed for any animal
 
+    // assigning the track position
+    moveToPosition(0, line);
+    cout << track;
 
-    srand(static_cast<unsigned int>(time(0)) + line);  //Setting randomizator. "line" to use differents random seeds
-
-    while (steps < trackOn.length()) {
-        system("cls");
-
-
-        moveToPosition(steps, line);// Setting position
-
+    while (steps < track.length()) {
         if (trackOn[steps] == '_') {
-            trackOn[steps] = animal[0]; //Showing position
+
+            trackOn[steps] = animal[0];// showing the current position
             cout << trackOn;
 
-            // Pausa aleatoria entre 100 ms y 500 ms
-            int randomPause = 100 + rand() % 400;  // Pause between 100 and 500 ms
+            int randomPause = 100 + rand() % 400;
             this_thread::sleep_for(chrono::milliseconds(randomPause));
 
-            // Limpiar el símbolo del animal de la posición actual
+            // printing the track
             trackOn[steps] = '_';
         }
 
         steps++;
 
-        // Determining the winner
-        if (steps == trackOn.length()) {
+        // who wins?
+        if (steps == track.length()) {
             moveToPosition(0, line + 1);
-            cout << animal << " win!! >:D" << endl;
+            cout << animal << " Win!! >:D" << endl;
             break;
         }
     }
 }
+
 int main() {
-    // ATTENTION PLEASE!! :D
-    // NOTE: Compile it with g++ -o main.exe main.cpp -pthread to avoid compilation problems!!! ;)
-    //Drawing the race course :) haha
+    // defining the "track" :D haha
     string track = "_______________________________________________________________________";
 
-    //Calling the function!!!
+    //
     thread duck(animalRunning, track, "D", 2);
     thread goose(animalRunning, track, "G", 3);
     thread swan(animalRunning, track, "S", 4);
