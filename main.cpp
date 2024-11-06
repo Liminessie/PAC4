@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// to move the console position!!
+// Función para mover el cursor de la consola a una posición específica
 void moveToPosition(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos;
@@ -16,51 +16,52 @@ void moveToPosition(int x, int y) {
     SetConsoleCursorPosition(hConsole, pos);
 }
 
-
+// Función para que cada animal avance en la pista
 void animalRunning(string track, string animal, int line) {
     int steps = 0;
-    srand(static_cast<unsigned int>(time(0)) + line);  // Different random seed for any animal
+    srand(static_cast<unsigned int>(time(0)) + line);  // Diferente semilla para cada línea/animal
 
-    // assigning the track position
+    // Mostrar la pista fija al inicio
     moveToPosition(0, line);
     cout << track;
 
     while (steps < track.length()) {
-        if (trackOn[steps] == '_') {
+        // Mueve el cursor a la posición de cada animal en la línea correspondiente
+        moveToPosition(steps, line);
 
-            trackOn[steps] = animal[0];// showing the current position
-            cout << trackOn;
+        // Colocar el animal en su posición actual
+        cout << animal;
 
-            int randomPause = 100 + rand() % 400;
-            this_thread::sleep_for(chrono::milliseconds(randomPause));
+        // Pausa aleatoria entre 100 ms y 500 ms
+        int randomPause = 100 + rand() % 400;
+        this_thread::sleep_for(chrono::milliseconds(randomPause));
 
-            // printing the track
-            trackOn[steps] = '_';
-        }
+        // Limpiar la posición actual del animal
+        moveToPosition(steps, line);
+        cout << "_"; // printing the track again...
 
         steps++;
 
-        // who wins?
+        // Determinar el ganador cuando el animal alcance el final de la pista
         if (steps == track.length()) {
-            moveToPosition(0, line + 1);
-            cout << animal << " Win!! >:D" << endl;
+            moveToPosition(0, 5);
+            cout << animal << " WinsS!! >:D" << endl;
             break;
         }
     }
 }
 
 int main() {
-    // ------------------------- Hey man!! ATTENTION!!! ------------------------------
-    // Compile it with "g++ -o main.exe main.cpp -pthread" to avoid some problems!!! ;)
+    system("cls");
+    // Definir la pista de la carrera
+    string track = "___________________________";
 
-    // defining the "track" :D haha
-    string track = "_______________________________________________________________________";
-
-    //
+    // creating threads
     thread duck(animalRunning, track, "D", 2);
     thread goose(animalRunning, track, "G", 3);
     thread swan(animalRunning, track, "S", 4);
 
+    // Esperar a que todos los hilos terminen
     duck.join();
     goose.join();
     swan.join();
