@@ -50,6 +50,9 @@ void animalRunning(string track, string animal, int line) {
 }
 
 int main() {
+    // ------------------------- Hey man!! ATTENTION!!! ------------------------------
+    // Compile it with "g++ -o main.exe main.cpp -pthread" to avoid some problems!!! ;)
+
     // defining the "track" :D haha
     string track = "_______________________________________________________________________";
 
